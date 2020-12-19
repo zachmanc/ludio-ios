@@ -1,0 +1,13 @@
+use_frameworks!
+
+platform :ios, '9.0'
+
+target 'ludio_Example' do
+  pod 'ludio', :path => '../'
+
+  target 'ludio_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
