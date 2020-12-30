@@ -15,7 +15,7 @@ import ludio
 
 ### Video Playback 
 
-```
+```swift
 //Create a ludio configuration
 let configuration = LudioPlayerConfiguration(loopVideo: true, autoplay: false)
 
@@ -55,7 +55,7 @@ self.ludioPlayer?.add(listener: self)
 
 Creating a capture object and previewing the content into a view
 
-```
+```swift
 // Create a Ludio Cpature object
 self.ludioCapture = LudioCapture(view: self.camPreview!)
 
@@ -69,7 +69,7 @@ ludioCapture?.stopRecording()
 
 Listen to events through the LudioCpatureDelegate
 
-```
+```swift
 func onCaptureStarted()
 func onCaptureCompleted()
 func onError()
