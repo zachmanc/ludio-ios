@@ -87,10 +87,6 @@ public class LudioPlayer: NSObject {
         playerLayer.videoGravity = .resizeAspectFill
         
         self.view.layer.addSublayer(playerLayer)
-        
-        if(self.configuration.autoplay) {
-            self.play()
-        }
     }
     
     public func load(videoUrls: [String]) {
@@ -171,6 +167,9 @@ public class LudioPlayer: NSObject {
             case .readyToPlay:
                 // Player item is ready to play.
                 print("Status: readyToPlay")
+                if(self.configuration.autoplay) {
+                    self.play()
+                }
                 break
             case .failed:
                 // Player item failed. See error.
@@ -187,11 +186,21 @@ public class LudioPlayer: NSObject {
             }
             print("Duration: \(duration)")
         } else if keyPath == #keyPath(AVPlayer.rate) {
-            guard let rate:Double = change?[.newKey] as? Double else {
+            guard let rate:Double = change?[.newKey] as? Double, let oldRate:Double = change?[.oldKey] as? Double else {
                 return
             }
             for listener in listeners {
                 listener.rateChanged(rate: rate);
+            }
+            
+            if (rate == 1.0 && oldRate == 0.0) {
+                for listener in listeners {
+                    listener.onPlay();
+                }
+            }else if (rate == 0.0 && oldRate == 1.0) {
+                for listener in listeners {
+                    listener.onPause();
+                }
             }
         }else if keyPath == #keyPath(AVPlayerItem.isPlaybackBufferEmpty) {
             guard let value:Bool = change?[.newKey] as? Bool else {

@@ -11,39 +11,7 @@ import ludio
 import AVFoundation
 import Photos
 
-class ViewController: UIViewController, LudioPlayerDelegate {
-    func stallStarted() {
-        print("Stall Started")
-    }
-    
-    func stallEnded() {
-        print("Stall Ended")
-    }
-    func rateChanged(rate: Double) {
-        print("Rate Changed: \(rate)")
-        if (rate != 0) {
-            self.playButton.setTitle("Pause", for: .normal)
-        }else {
-            self.playButton.setTitle("Play", for: .normal)
-        }
-    }
-    
-    func timeChanged(time: Double) {
-        self.timeLabel.text = String(format: "%.1f", time)
-    }
-    
-    
-    @IBAction func playButtonPressed(_ sender: UIButton, forEvent event: UIEvent){
-        guard let player = self.ludioPlayer else {
-            return
-        }
-        if (player.rate().isEqual(to: 0.0)) {
-            player.play()
-        }else {
-            player.pause()
-        }
-    }
-    
+class ViewController: UIViewController {
     @IBOutlet weak var playerView: UIView?
     @IBOutlet weak var camPreview: UIView!
     @IBOutlet weak var timeLabel: UILabel!
@@ -57,7 +25,7 @@ class ViewController: UIViewController, LudioPlayerDelegate {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        let configuration = LudioPlayerConfiguration(loopVideo: true, autoplay: false)
+        let configuration = LudioPlayerConfiguration(loopVideo: true, autoplay: true)
         
         self.ludioPlayer = LudioPlayer(view:self.playerView!, configuration: configuration);
         self.ludioCapture = LudioCapture(view: self.camPreview!)
@@ -85,6 +53,53 @@ class ViewController: UIViewController, LudioPlayerDelegate {
     @objc func startCapture() {
         ludioCapture?.startRecording()
     }
+    
+    @IBAction func playButtonPressed(_ sender: UIButton, forEvent event: UIEvent){
+        guard let player = self.ludioPlayer else {
+            return
+        }
+        if (player.rate().isEqual(to: 0.0)) {
+            player.play()
+        }else {
+            player.pause()
+        }
+    }
 
+}
+
+extension ViewController: LudioPlayerDelegate {
+    func onError(code: Int) {
+        print("On Error")
+    }
+    
+    func stallStarted() {
+        print("Stall Started")
+    }
+    
+    func stallEnded() {
+        print("Stall Ended")
+    }
+    func rateChanged(rate: Double) {
+        print("On Rate Changed: \(rate)")
+        if (rate != 0) {
+            self.playButton.setTitle("Pause", for: .normal)
+        }else {
+            self.playButton.setTitle("Play", for: .normal)
+        }
+    }
+    
+    func timeChanged(time: Double) {
+        self.timeLabel.text = String(format: "%.1f", time)
+    }
+    
+    func onPause() {
+        print("On Pause")
+
+    }
+    
+    func onPlay() {
+        print("On Play")
+
+    }
 }
 

@@ -12,7 +12,7 @@ public protocol LudioPlayerDelegate: class {
     func rateChanged(rate: Double);
     func stallStarted();
     func stallEnded();
-    func onError(code: Number)
+    func onError(code: Int)
     func onPlay();
     func onPause();
 }
