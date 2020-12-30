@@ -21,6 +21,8 @@ class ViewController: UIViewController {
 
     var ludioPlayer:LudioPlayer?;
     var ludioCapture:LudioCapture?;
+    var isRecording:Bool = false;
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -38,10 +40,11 @@ class ViewController: UIViewController {
         
         cameraButton.frame = CGRect(x: 5, y: 5, width: 30, height: 30)
         
-        cameraButton.backgroundColor = UIColor.blue
+        cameraButton.backgroundColor = UIColor.red
         
         camPreview.addSubview(cameraButton)
         self.ludioPlayer?.add(listener: self)
+        self.ludioCapture?.add(listener: self)
         self.ludioPlayer?.load(videoUrl: "https://mkplayer.z13.web.core.windows.net/squat.mp4")
     }
 
@@ -51,7 +54,11 @@ class ViewController: UIViewController {
     }
     
     @objc func startCapture() {
-        ludioCapture?.startRecording()
+        if self.isRecording {
+            ludioCapture?.stopRecording()
+        }else {
+            ludioCapture?.startRecording()
+        }
     }
     
     @IBAction func playButtonPressed(_ sender: UIButton, forEvent event: UIEvent){
@@ -64,7 +71,13 @@ class ViewController: UIViewController {
             player.pause()
         }
     }
-
+    
+    @IBAction func seekButtonPressed(_ sender: UIButton, forEvent event: UIEvent){
+        guard let player = self.ludioPlayer else {
+            return
+        }
+        player.seek(time: 10)
+    }
 }
 
 extension ViewController: LudioPlayerDelegate {
@@ -102,4 +115,26 @@ extension ViewController: LudioPlayerDelegate {
 
     }
 }
+
+extension ViewController: LudioCaptureDelegate {
+    func onCaptureStarted() {
+        print("On Capture Started")
+        cameraButton.backgroundColor = UIColor.white
+        isRecording = true
+    }
+    
+    func onCaptureCompleted() {
+        print("On Capture Completed")
+        cameraButton.backgroundColor = UIColor.red
+        isRecording = false
+    }
+    
+    func onError() {
+        print("On Capture rror")
+    }
+    
+    
+
+}
+
 

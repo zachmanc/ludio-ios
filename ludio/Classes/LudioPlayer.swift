@@ -7,7 +7,8 @@ public class LudioPlayer: NSObject {
     var configuration: LudioPlayerConfiguration;
     var playerLooper: AVPlayerLooper?;
     var timeObserverToken: Any?;
-    
+    private var listeners: [LudioPlayerDelegate] = []
+
     // Key-value observing context
     private var playerItemContext = 0
     private var playerContext = 1
@@ -18,7 +19,6 @@ public class LudioPlayer: NSObject {
         "duration"
     ]
     
-    private var listeners: [LudioPlayerDelegate] = []
     
     public init(view: UIView, configuration: LudioPlayerConfiguration){
         self.configuration = configuration;
@@ -93,10 +93,6 @@ public class LudioPlayer: NSObject {
         
     }
     
-    public func add(listener: LudioPlayerDelegate) {
-        listeners.append(listener);
-    }
-    
     public func play() {
         player.play()
     }
@@ -105,6 +101,11 @@ public class LudioPlayer: NSObject {
         self.player.pause()
     }
     
+    
+    public func add(listener: LudioPlayerDelegate) {
+        listeners.append(listener);
+    }
+
     public func remove(listener: LudioPlayerDelegate) {
         if let idx = listeners.firstIndex(where: { $0 === listener }) {
             listeners.remove(at: idx)
@@ -138,6 +139,10 @@ public class LudioPlayer: NSObject {
     
     public func rate() -> Float {
         return self.player.rate
+    }
+    
+    public func seek(time: Double){
+        self.player.seek(to: CMTimeMakeWithSeconds(time, 1000))
     }
             
     public override func observeValue(forKeyPath keyPath: String?,

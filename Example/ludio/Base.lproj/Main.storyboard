@@ -18,15 +18,15 @@
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="kh9-bI-dsS">
                         <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="b1W-gg-q8z">
                                 <rect key="frame" x="0.0" y="44" width="390" height="766"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HKH-Ey-a4D">
-                                <rect key="frame" x="20" y="52" width="87" height="70"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="48"/>
+                                <rect key="frame" x="20" y="52" width="60" height="52"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="33"/>
                                 <state key="normal" title="Play">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
@@ -35,12 +35,23 @@
                                     <action selector="playButtonPressed:forEvent:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="v2o-8t-u39"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iQn-P9-qEi">
+                                <rect key="frame" x="160.66666666666666" y="52" width="69" height="51"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="32"/>
+                                <state key="normal" title="Seek">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="seekButtonPressed:forEvent:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="7dC-JT-ctB"/>
+                                    <action selector="seekButtonPressed:forEvent:" destination="vXZ-lx-hvc" eventType="touchUpOutside" id="EmP-Kk-JBH"/>
+                                </connections>
+                            </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0.0" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VgC-IM-3Ja">
-                                <rect key="frame" x="285.33333333333331" y="52" width="90" height="57.333333333333343"/>
+                                <rect key="frame" x="317" y="58.333333333333329" width="60" height="38.333333333333329"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="90" id="UCN-8u-vWa"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="60" id="UCN-8u-vWa"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="48"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="32"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -53,18 +64,20 @@
                         <constraints>
                             <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="Heq-4o-QOH" secondAttribute="bottom" constant="21" id="1zR-Vf-tBB"/>
                             <constraint firstItem="Heq-4o-QOH" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" constant="230" id="4OK-Nh-DjI"/>
-                            <constraint firstItem="VgC-IM-3Ja" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="HKH-Ey-a4D" secondAttribute="trailing" constant="8" symbolic="YES" id="5lZ-aG-Ft0"/>
+                            <constraint firstItem="iQn-P9-qEi" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="HKH-Ey-a4D" secondAttribute="trailing" constant="8" symbolic="YES" id="8wf-Fb-lYp"/>
                             <constraint firstAttribute="trailing" secondItem="Heq-4o-QOH" secondAttribute="trailing" constant="34" id="94H-f7-C6I"/>
+                            <constraint firstAttribute="trailing" secondItem="VgC-IM-3Ja" secondAttribute="trailing" constant="13" id="BqK-sw-mh9"/>
                             <constraint firstItem="b1W-gg-q8z" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leadingMargin" constant="-16" id="HFV-Jx-NdE"/>
-                            <constraint firstItem="VgC-IM-3Ja" firstAttribute="top" secondItem="jyV-Pf-zRb" secondAttribute="bottom" constant="8" symbolic="YES" id="NOg-sg-kzj"/>
                             <constraint firstItem="HKH-Ey-a4D" firstAttribute="top" secondItem="jyV-Pf-zRb" secondAttribute="bottom" constant="8" symbolic="YES" id="NjI-2n-Y8V"/>
                             <constraint firstItem="b1W-gg-q8z" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="RkU-s0-doj"/>
                             <constraint firstItem="b1W-gg-q8z" firstAttribute="top" secondItem="kh9-bI-dsS" secondAttribute="topMargin" id="dVI-Ci-YEc"/>
+                            <constraint firstItem="VgC-IM-3Ja" firstAttribute="centerY" secondItem="iQn-P9-qEi" secondAttribute="centerY" id="di2-kE-ZRc"/>
                             <constraint firstItem="b1W-gg-q8z" firstAttribute="bottom" secondItem="kh9-bI-dsS" secondAttribute="bottomMargin" id="ezd-tG-Hde"/>
-                            <constraint firstItem="VgC-IM-3Ja" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="kh9-bI-dsS" secondAttribute="leading" constant="20" symbolic="YES" id="gRb-sj-rhm"/>
-                            <constraint firstAttribute="trailing" secondItem="VgC-IM-3Ja" secondAttribute="trailing" constant="14.666666666666686" id="ikX-94-CAY"/>
+                            <constraint firstItem="VgC-IM-3Ja" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="iQn-P9-qEi" secondAttribute="trailing" priority="900" constant="8" symbolic="YES" id="kEx-hB-LJS"/>
                             <constraint firstItem="HKH-Ey-a4D" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" constant="20" symbolic="YES" id="nHU-oJ-5gD"/>
                             <constraint firstItem="Heq-4o-QOH" firstAttribute="top" secondItem="jyV-Pf-zRb" secondAttribute="bottom" priority="900" constant="480" id="nak-cD-1nK"/>
+                            <constraint firstItem="iQn-P9-qEi" firstAttribute="top" secondItem="HKH-Ey-a4D" secondAttribute="top" id="sc9-qU-uIa"/>
+                            <constraint firstItem="iQn-P9-qEi" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="yIn-Xe-fbr"/>
                         </constraints>
                     </view>
                     <connections>

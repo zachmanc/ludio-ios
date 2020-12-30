@@ -15,7 +15,8 @@ public class LudioCapture: NSObject, AVCaptureFileOutputRecordingDelegate {
     var previewLayer: AVCaptureVideoPreviewLayer!
     var activeInput: AVCaptureDeviceInput!
     var cameraActive: Bool = false;
-    
+    private var listeners: [LudioCaptureDelegate] = []
+
     public init(view: UIView) {
         self.previewView = view
         super.init()
@@ -199,19 +200,33 @@ public class LudioCapture: NSObject, AVCaptureFileOutputRecordingDelegate {
             let outputFileName = NSUUID().uuidString
             let outputFilePath = (NSTemporaryDirectory() as NSString).appendingPathComponent((outputFileName as NSString).appendingPathExtension("mov")!)
             movieOutput.startRecording(to: URL(fileURLWithPath: outputFilePath), recordingDelegate: self)
-            
-//            cameraButton.backgroundColor = UIColor.red
+
+            for listener in listeners {
+                listener.onCaptureStarted()
+            }
         }
     }
 
     public func stopRecording() {
         if movieOutput.isRecording == true {
             movieOutput.stopRecording()
-//            cameraButton.backgroundColor = UIColor.blue
+            for listener in listeners {
+                listener.onCaptureCompleted()
+            }
         }
     }
     
     public func isCameraActive() -> Bool {
         return cameraActive
+    }
+    
+    public func add(listener: LudioCaptureDelegate) {
+        listeners.append(listener);
+    }
+
+    public func remove(listener: LudioCaptureDelegate) {
+        if let idx = listeners.firstIndex(where: { $0 === listener }) {
+            listeners.remove(at: idx)
+        }
     }
 }
