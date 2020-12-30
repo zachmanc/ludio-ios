@@ -14,7 +14,7 @@ public class LudioCapture: NSObject, AVCaptureFileOutputRecordingDelegate {
     let movieOutput = AVCaptureMovieFileOutput()
     var previewLayer: AVCaptureVideoPreviewLayer!
     var activeInput: AVCaptureDeviceInput!
-    var cameraActive: Bool = false;
+    var cameraActive: Bool = false
     private var listeners: [LudioCaptureDelegate] = []
 
     public init(view: UIView) {
@@ -26,7 +26,7 @@ public class LudioCapture: NSObject, AVCaptureFileOutputRecordingDelegate {
             startSession()
         }
     }
-    
+
     func setupPreview() {
         // Configure previewLayer
         previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
@@ -35,19 +35,19 @@ public class LudioCapture: NSObject, AVCaptureFileOutputRecordingDelegate {
         previewView.layer.addSublayer(previewLayer)
     }
 
-    //MARK:- Setup Camera
+    // MARK: - Setup Camera
     func setupSession() -> Bool {
-        
+
         captureSession.sessionPreset = AVCaptureSession.Preset.high
-        
+
         // Setup Camera
         let camera = AVCaptureDevice.devices(for: AVMediaType.video)
-        
+
         do {
             guard let device = camera.last else {
                 return false
             }
-            
+
             let input = try AVCaptureDeviceInput(device: device)
             if captureSession.canAddInput(input) {
                 captureSession.addInput(input)
@@ -57,15 +57,15 @@ public class LudioCapture: NSObject, AVCaptureFileOutputRecordingDelegate {
             print("Error setting device video input: \(error)")
             return false
         }
-        
+
         // Movie output
         if captureSession.canAddOutput(movieOutput) {
             captureSession.addOutput(movieOutput)
         }
-        
+
         return true
     }
-    
+
     public func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
         // Note: Because we use a unique file path for each recording, a new recording won't overwrite a recording mid-save.
         func cleanup() {
@@ -78,14 +78,14 @@ public class LudioCapture: NSObject, AVCaptureFileOutputRecordingDelegate {
                 }
             }
         }
-        
+
         var success = true
-        
+
         if error != nil {
             print("Movie file finishing error: \(String(describing: error))")
             success = (((error! as NSError).userInfo[AVErrorRecordingSuccessfullyFinishedKey] as AnyObject).boolValue)!
         }
-        
+
         if success {
             // Check the authorization status.
             PHPhotoLibrary.requestAuthorization { status in
@@ -111,20 +111,20 @@ public class LudioCapture: NSObject, AVCaptureFileOutputRecordingDelegate {
             cleanup()
         }
     }
-    
-    @objc private func onVideoError(notification: NSNotification){
-        print("AVCaptureSessionRuntimeError");
+
+    @objc private func onVideoError(notification: NSNotification) {
+        print("AVCaptureSessionRuntimeError")
     }
-    
-    //MARK:- Camera Session
+
+    // MARK: - Camera Session
     func startSession() {
-        
+
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(self.onVideoError),
             name: NSNotification.Name.AVCaptureSessionRuntimeError,
             object: captureSession)
-        
+
         if !captureSession.isRunning {
             videoQueue().async {
                 self.captureSession.startRunning()
@@ -144,11 +144,9 @@ public class LudioCapture: NSObject, AVCaptureFileOutputRecordingDelegate {
         return DispatchQueue.main
     }
 
-
-
     func currentVideoOrientation() -> AVCaptureVideoOrientation {
         var orientation: AVCaptureVideoOrientation
-        
+
         switch UIDevice.current.orientation {
         case .portrait:
             orientation = AVCaptureVideoOrientation.portrait
@@ -159,25 +157,25 @@ public class LudioCapture: NSObject, AVCaptureFileOutputRecordingDelegate {
         default:
             orientation = AVCaptureVideoOrientation.landscapeRight
         }
-        
+
         return orientation
     }
 
     public func startRecording() {
-        
+
         if movieOutput.isRecording == false {
-            
+
             let connection = movieOutput.connection(with: AVMediaType.video)
             if (connection?.isVideoOrientationSupported)! {
                 connection?.videoOrientation = currentVideoOrientation()
             }
-            
+
             if (connection?.isVideoStabilizationSupported)! {
                 connection?.preferredVideoStabilizationMode = AVCaptureVideoStabilizationMode.auto
             }
-            
+
             let device = activeInput.device
-            if (device.isSmoothAutoFocusSupported) {
+            if device.isSmoothAutoFocusSupported {
                 do {
                     try device.lockForConfiguration()
                     device.isSmoothAutoFocusEnabled = false
@@ -186,7 +184,7 @@ public class LudioCapture: NSObject, AVCaptureFileOutputRecordingDelegate {
                     print("Error setting configuration: \(error)")
                 }
             }
-            
+
             // Update the orientation on the movie file output video connection before recording.
             if #available(iOS 11.0, *) {
                 let availableVideoCodecTypes = movieOutput.availableVideoCodecTypes
@@ -196,7 +194,7 @@ public class LudioCapture: NSObject, AVCaptureFileOutputRecordingDelegate {
             } else {
                 // Fallback on earlier versions
             }
-            
+
             let outputFileName = NSUUID().uuidString
             let outputFilePath = (NSTemporaryDirectory() as NSString).appendingPathComponent((outputFileName as NSString).appendingPathExtension("mov")!)
             movieOutput.startRecording(to: URL(fileURLWithPath: outputFilePath), recordingDelegate: self)
@@ -215,13 +213,13 @@ public class LudioCapture: NSObject, AVCaptureFileOutputRecordingDelegate {
             }
         }
     }
-    
+
     public func isCameraActive() -> Bool {
         return cameraActive
     }
-    
+
     public func add(listener: LudioCaptureDelegate) {
-        listeners.append(listener);
+        listeners.append(listener)
     }
 
     public func remove(listener: LudioCaptureDelegate) {

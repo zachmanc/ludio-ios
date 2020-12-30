@@ -9,8 +9,8 @@ import Foundation
 
 public protocol LudioCaptureDelegate: class {
     func onCaptureStarted()
-    
+
     func onCaptureCompleted()
-    
+
     func onError()
 }

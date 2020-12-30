@@ -8,14 +8,14 @@
 import Foundation
 
 public class LudioPlayerConfiguration {
-    
-    var loopVideo:Bool = false
-    
-    var autoplay:Bool = false;
-    
-    public init(loopVideo:Bool = false, autoplay:Bool = false) {
+
+    var loopVideo: Bool = false
+
+    var autoplay: Bool = false
+
+    public init(loopVideo: Bool = false, autoplay: Bool = false) {
         self.loopVideo = loopVideo
         self.autoplay = autoplay
     }
-    
+
 }
