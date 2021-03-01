@@ -166,12 +166,16 @@ public class LudioCapture: NSObject, AVCaptureFileOutputRecordingDelegate {
         if movieOutput.isRecording == false {
 
             let connection = movieOutput.connection(with: AVMediaType.video)
-            if (connection?.isVideoOrientationSupported)! {
+            if ((connection?.isVideoOrientationSupported) != nil) {
                 connection?.videoOrientation = currentVideoOrientation()
             }
 
-            if (connection?.isVideoStabilizationSupported)! {
+            if ((connection?.isVideoStabilizationSupported) != nil) {
                 connection?.preferredVideoStabilizationMode = AVCaptureVideoStabilizationMode.auto
+            }
+            
+            if activeInput == nil {
+                return
             }
 
             let device = activeInput.device
