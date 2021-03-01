@@ -118,7 +118,7 @@ public class LudioPlayer: NSObject {
         return self.player.rate
     }
     public func seek(time: Double) {
-        self.player.seek(to: CMTimeMakeWithSeconds(time, preferredTimescale: 1000))
+        self.player.seek(to: CMTimeMakeWithSeconds(time, 1000))
     }
     public override func observeValue(forKeyPath keyPath: String?,
                                of object: Any?,

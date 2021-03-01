@@ -1,5 +1,5 @@
 PODS:
-  - ludio (0.1.0)
+  - ludio (0.1.2)
 
 DEPENDENCIES:
   - ludio (from `../`)
@@ -9,8 +9,8 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  ludio: 622b226e75e1946c454d7ec4e6f0b95b1b887c6a
+  ludio: c05ce1d4e48ddba713dad2aa726488a5622fcae2
 
 PODFILE CHECKSUM: e108cac85e52c55d14cb8cee218039b6612fcf41
 
-COCOAPODS: 1.10.0
+COCOAPODS: 1.10.1
