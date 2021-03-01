@@ -1,63 +1,61 @@
 import UIKit
 import AVFoundation
-
 public class LudioPlayer: NSObject {
     var view: UIView
     var player: AVQueuePlayer
+    var playerLayer: AVPlayerLayer;
     var configuration: LudioPlayerConfiguration
     var playerLooper: AVPlayerLooper?
     var timeObserverToken: Any?
     private var listeners: [LudioPlayerDelegate] = []
-
     // Key-value observing context
     private var playerItemContext = 0
     private var playerContext = 1
-
     let requiredAssetKeys = [
         "playable",
         "hasProtectedContent",
         "duration"
     ]
-
+    
+    public func setFrameForLayer(){
+        self.playerLayer.frame = self.view.bounds;
+    }
     public init(view: UIView, configuration: LudioPlayerConfiguration) {
+        
         self.configuration = configuration
         self.view = view
         self.player = AVQueuePlayer()
+        self.playerLayer = AVPlayerLayer(player: self.player);
+        
         super.init()
-        player.addObserver(self, forKeyPath: #keyPath(AVPlayer.rate), options: [.old, .new],
-                            context: &playerContext)
+        
+        self.player.addObserver(self, forKeyPath: #keyPath(AVPlayer.rate), options: [.old, .new],
+                           context: &playerContext);
+        
     }
-
     public func load(videoUrl: String) {
         guard let url = URL(string: videoUrl) else {
             return
         }
-
         let asset = AVAsset(url: url)
-
         let playerItem = AVPlayerItem(asset: asset)
-
         // Register as an observer of the player item's status property
         playerItem.addObserver(self,
                                forKeyPath: #keyPath(AVPlayerItem.status),
                                options: [.old, .new],
                                context: &playerItemContext)
-
         playerItem.addObserver(self,
                                forKeyPath: #keyPath(AVPlayerItem.isPlaybackBufferFull),
                                options: [.old, .new],
                                context: &playerItemContext)
-
         playerItem.addObserver(self,
                                forKeyPath: #keyPath(AVPlayerItem.isPlaybackBufferEmpty),
                                options: [.old, .new],
                                context: &playerItemContext)
-
         playerItem.addObserver(self,
                                forKeyPath: #keyPath(AVPlayerItem.isPlaybackLikelyToKeepUp),
                                options: [.old, .new],
                                context: &playerItemContext)
-
         // Register as an observer of the player item's status property
         playerItem.addObserver(self,
                                forKeyPath: #keyPath(AVPlayerItem.duration),
@@ -68,51 +66,38 @@ public class LudioPlayer: NSObject {
                                forKeyPath: #keyPath(AVPlayerItem.error),
                                options: [.old, .new],
                                context: &playerItemContext)
-
         player.replaceCurrentItem(with: playerItem)
-
         if self.configuration.loopVideo {
             self.playerLooper = AVPlayerLooper(player: player, templateItem: playerItem)
         }
-
         addPeriodicTimeObserver()
-
-        let playerLayer = AVPlayerLayer(player: player)
-
-        playerLayer.frame = self.view.bounds
-
-        playerLayer.videoGravity = .resizeAspectFill
-
-        self.view.layer.addSublayer(playerLayer)
+        
+        self.playerLayer.frame = self.view.bounds;
+        self.playerLayer.videoGravity = .resizeAspectFill
+        
+        self.view.layer.addSublayer(playerLayer);
+        self.view.layer.frame = self.view.frame;
     }
-
     public func load(videoUrls: [String]) {
-
     }
-
     public func play() {
         player.play()
     }
-
     public func pause() {
         self.player.pause()
     }
-
     public func add(listener: LudioPlayerDelegate) {
         listeners.append(listener)
     }
-
     public func remove(listener: LudioPlayerDelegate) {
         if let idx = listeners.firstIndex(where: { $0 === listener }) {
             listeners.remove(at: idx)
         }
     }
-
     func addPeriodicTimeObserver() {
         // Notify every half second
         let timeScale = CMTimeScale(NSEC_PER_SEC)
         let time = CMTime(seconds: 0.1, preferredTimescale: timeScale)
-
         timeObserverToken = player.addPeriodicTimeObserver(forInterval: time, queue: .main, using: {
             [weak self] (playerTime) in
             guard let listeners = self?.listeners else {
@@ -122,29 +107,23 @@ public class LudioPlayer: NSObject {
                 listener.timeChanged(time: CMTimeGetSeconds(playerTime))
             }
         })
-
     }
-
     func removePeriodicTimeObserver() {
         if let timeObserverToken = timeObserverToken {
             player.removeTimeObserver(timeObserverToken)
             self.timeObserverToken = nil
         }
     }
-
     public func rate() -> Float {
         return self.player.rate
     }
-
     public func seek(time: Double) {
-        self.player.seek(to: CMTimeMakeWithSeconds(time, 1000))
+        self.player.seek(to: CMTimeMakeWithSeconds(time, preferredTimescale: 1000))
     }
-
     public override func observeValue(forKeyPath keyPath: String?,
                                of object: Any?,
                                change: [NSKeyValueChangeKey: Any]?,
                                context: UnsafeMutableRawPointer?) {
-
         // Only handle observations for the playerItemContext
         guard context == &playerItemContext || context == &playerContext else {
             super.observeValue(forKeyPath: keyPath,
@@ -153,15 +132,13 @@ public class LudioPlayer: NSObject {
                                context: context)
             return
         }
-
         if keyPath == #keyPath(AVPlayerItem.status) {
-            let status: AVPlayerItemStatus
+            let status: AVPlayerItem.Status
             if let statusNumber = change?[.newKey] as? NSNumber {
-                status = AVPlayerItemStatus(rawValue: statusNumber.intValue)!
+                status = AVPlayerItem.Status(rawValue: statusNumber.intValue)!
             } else {
                 status = .unknown
             }
-
             // Switch over status value
             switch status {
             case .readyToPlay:
@@ -192,7 +169,6 @@ public class LudioPlayer: NSObject {
             for listener in listeners {
                 listener.rateChanged(rate: rate)
             }
-
             if rate == 1.0 && oldRate == 0.0 {
                 for listener in listeners {
                     listener.onPlay()
@@ -219,5 +195,4 @@ public class LudioPlayer: NSObject {
             print("isPlaybackLikelyToKeepUp: \(value)")
         }
     }
-
 }
